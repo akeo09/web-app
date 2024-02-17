@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="../css/createAccount.css">
+</head>
+
+<body>
+    <div class="container">
+    <h1>Create Account</h1>
+    <hr>
+            <form>
+                <label for="firstName">First Name</label>
+                <input id="firstName" type="text">
+
+                <label for="lastName">Last Name</label>
+                <input id="lastName" type="text">
+
+                <label for="email">Email</label>
+                <input id="email" type="email">
+
+                <label for="major">Major</label>
+                <input id="major" type="text">
+
+                <label for="password">Password</label>
+                <input id="password" type="password">
+
+                <label for="confirmPass">Confirm Password</label>
+                <input id="confirmPass" type="password">
+
+                <button @click="submit" class="btn" type="button">Submit</button>
+
+                <a href="signin.html">Return to Sign In</a>
+            </form>
+    </div>
+</body>
+</html>
