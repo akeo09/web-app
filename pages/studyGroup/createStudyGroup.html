@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="../../css/createStudyGroup.css">
+</head>
+
+<body>
+    <div class="container">
+    <h1>Study Groups</h1>
+    <hr>
+            <form id="studyGroupForm">
+                <label for="name">Name</label>
+                <input id="Name" type="text">
+
+                <label for="owner">Owner</label>
+                <input id="owner" type="text">
+
+                <label for="public">Public?</label>
+                <input id="public" type="text">
+
+                <label for="maxParticipants">Max Participants</label>
+                <input id="maxParticipants" type="text">
+
+                <label for="startDate">Start Date</label>
+                <input id="startDate" type="date">
+
+                <label for="endDate">End Date</label>
+                <input id="endDate" type="date">
+
+                <h3>Meeting Times</h3>
+                
+                <!------------------DAYSOFWEEK------------------------------>
+                <div class="days">
+                <h4>Days</h4>
+                    <label for="monday">Monday</label>
+                    <input type="checkbox" id="monday">
+                    <br>
+                    <label for="tuesday">Tuesday</label>
+                    <input type="checkbox" id="tuesday">
+                    <br>
+                    <label for="wednesday">Wednesday</label>
+                    <input type="checkbox" id="wednesday">
+                    <br>
+                    <label for="thursday">Thursday</label>
+                    <input type="checkbox" id="thrusday">
+                    <br>
+                    <label for="friday">Friday</label>
+                    <input type="checkbox" id="friday">
+                    <br>
+                    <label for="saturday">Saturday</label>
+                    <input type="checkbox" id="saturday">
+                    <br>
+                    <label for="sunday">Sunday</label>
+                    <input type="checkbox" id="sunday">
+                </div>
+                <!------------------DAYSOFWEEK------------------------------>
+            
+                <label for="time">Time</label>
+                <input id="time" type="time"> 
+                
+                <label for="description">Description</label>
+                <input id="description" type="text"> 
+
+                <label for="school">School</label>
+                <input id="school" type="text"> 
+
+                <label for="courseNum">Course Number</label>
+                <input id="courseNum" type="text"> 
+
+                <label for="participants">Participants</label>
+                <input id="participants" type="text"> 
+
+                <div class="button">
+                    <button id="createButton" type="submit">Create</button>
+                </div>                
+                <a href="../../index.html">Back to Home</a>
+            </form>
+
+                <p id="loginMessage"></p>
+    </div>
+    <script src="../js/createStudyGroup.js"></script>
+</body>
+</html>
