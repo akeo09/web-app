@@ -9,15 +9,15 @@
     <div class="container">
     <h1>Create Account</h1>
     <hr>
-            <form>
-                <label for="firstName">First Name</label>
-                <input id="firstName" type="text">
-
-                <label for="lastName">Last Name</label>
-                <input id="lastName" type="text">
+            <form id="createAccountForm">
+                <label for="username">Username</label>
+                <input id="username" type="text">
 
                 <label for="email">Email</label>
                 <input id="email" type="email">
+
+                <label for="school">School</label>
+                <input id="school" type="text">
 
                 <label for="major">Major</label>
                 <input id="major" type="text">
@@ -25,13 +25,19 @@
                 <label for="password">Password</label>
                 <input id="password" type="password">
 
-                <label for="confirmPass">Confirm Password</label>
-                <input id="confirmPass" type="password">
+                <label for="confirmPassword">Confirm Password</label>
+                <input id="confirmPassword" type="password">
 
-                <button @click="submit" class="btn" type="button">Submit</button>
+                <button type="submit">Create Account</button>
 
                 <a href="signin.html">Return to Sign In</a>
+                <a style="float:right" href="../main.html">Back to Home</a>
+
             </form>
+
+            <div id="message"></div>
     </div>
 </body>
+<script src="../js/createAccount.js"></script>
+
 </html>

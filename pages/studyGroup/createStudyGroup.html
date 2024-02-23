@@ -11,14 +11,12 @@
     <hr>
             <form id="studyGroupForm">
                 <label for="name">Name</label>
-                <input id="Name" type="text">
+                <input id="name" type="text">
 
-                <label for="owner">Owner</label>
-                <input id="owner" type="text">
-
-                <label for="public">Public?</label>
-                <input id="public" type="text">
-
+                <label for="public">Public:</label>
+                <input id="public" type="checkbox">
+                <br>
+                <br>
                 <label for="maxParticipants">Max Participants</label>
                 <input id="maxParticipants" type="text">
 
@@ -28,37 +26,40 @@
                 <label for="endDate">End Date</label>
                 <input id="endDate" type="date">
 
-                <h3>Meeting Times</h3>
-                
+                <fieldset>
+                    <legend>Meeting Times: </legend>
+                    <!------------------DAYSOFWEEK------------------------------>
+                    <div class="days">
+                        <label>Days of Week</label><br>
+                        <label for="monday">Monday</label>
+                        <input type="checkbox" id="monday" name="days" value="Monday">
+                        <br>
+                        <label for="tuesday">Tuesday</label>
+                        <input type="checkbox" id="tuesday" name="days" value="Tuesday">
+                        <br>
+                        <label for="wednesday">Wednesday</label>
+                        <input type="checkbox" id="wednesday" name="days" value="Wednesday">
+                        <br>
+                        <label for="thursday">Thursday</label>
+                        <input type="checkbox" id="thrusday" name="days" value="Thursday">
+                        <br>
+                        <label for="friday">Friday</label>
+                        <input type="checkbox" id="friday" name="days" value="Friday">
+                        <br>
+                        <label for="saturday">Saturday</label>
+                        <input type="checkbox" id="saturday" name="days" value="Saturday">
+                        <br>
+                        <label for="sunday">Sunday</label>
+                        <input type="checkbox" id="sunday" name="days" value="Sunday">
+                    </div>
                 <!------------------DAYSOFWEEK------------------------------>
-                <div class="days">
-                <h4>Days</h4>
-                    <label for="monday">Monday</label>
-                    <input type="checkbox" id="monday">
-                    <br>
-                    <label for="tuesday">Tuesday</label>
-                    <input type="checkbox" id="tuesday">
-                    <br>
-                    <label for="wednesday">Wednesday</label>
-                    <input type="checkbox" id="wednesday">
-                    <br>
-                    <label for="thursday">Thursday</label>
-                    <input type="checkbox" id="thrusday">
-                    <br>
-                    <label for="friday">Friday</label>
-                    <input type="checkbox" id="friday">
-                    <br>
-                    <label for="saturday">Saturday</label>
-                    <input type="checkbox" id="saturday">
-                    <br>
-                    <label for="sunday">Sunday</label>
-                    <input type="checkbox" id="sunday">
-                </div>
-                <!------------------DAYSOFWEEK------------------------------>
-            
-                <label for="time">Time</label>
-                <input id="time" type="time"> 
-                
+                    <label for="time">Time</label>
+                    <input id="time" type="time"> 
+
+                    <label for="location">Location</label>
+                    <input id="location" type="text">
+                </fieldset>
+
                 <label for="description">Description</label>
                 <input id="description" type="text"> 
 
@@ -72,13 +73,13 @@
                 <input id="participants" type="text"> 
 
                 <div class="button">
-                    <button id="createButton" type="submit">Create</button>
+                    <button id="createStudyGroupForm" type="submit">Create</button>
                 </div>                
                 <a href="../../index.html">Back to Home</a>
             </form>
 
-                <p id="loginMessage"></p>
+            <div id="message"></div>
     </div>
-    <script src="../js/createStudyGroup.js"></script>
+    <script src="../../js/createStudyGroup.js"></script>
 </body>
 </html>

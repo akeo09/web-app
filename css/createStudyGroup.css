@@ -1,0 +1,54 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    align-items: center;
+    background-color: grey;
+    display: flex;
+    justify-content: center;
+    height: 150vh;
+}
+
+.container {
+    padding: 16px;
+    background-color: lightgrey;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 65%;
+    
+}
+
+input:not([type="checkbox"],[type="radio"]) {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    border-radius: 10px;
+    border: 0;
+    box-sizing: border-box;
+    padding: 4px 20px 0;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.days {
+    padding-bottom: 20px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: lightseagreen;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.8;
+}
+
+button:hover {
+    opacity: 1;
+}
+
+a {
+    font-size: 15px;
+}
