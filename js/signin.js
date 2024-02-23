@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     localStorage.setItem('user', JSON.stringify(responseData.user));
                     localStorage.setItem('token', responseData.token);
 
-                    console.log("user data stored: ", (responseData.user));
+                    console.log("user data stored: ", responseData.user);
                     console.log("Token stored: ", responseData.token);
 
                     //window.location.href = '../main.html'; //redirect to main
