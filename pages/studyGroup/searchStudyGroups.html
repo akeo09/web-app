@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="../../css/createStudyGroup.css">
+</head>
+
+<body>
+    <div class="container">
+    <h1>Search for Study Groups</h1>
+    <hr>
+            <form id="searchForm">
+                <label for="search">Search Key Word</label>
+                <input id="search" type="text">
+
+                <label for="ongoing">Is the group ongoing?</label>
+                <input id="ongoing" type="checkbox">
+                <br>
+                <br>
+                <label for="skip">Skip</label>
+                <input id="skip" type="number">
+                
+                <label for="limit">Limit</label>
+                <input id="limit" type="number">
+
+                <label for="startDate">Start Date</label>
+                <input id="startDate" type="date">
+
+                <label for="endDate">End Date</label>
+                <input id="endDate" type="date">
+             
+                <div class="button">
+                    <button id="searchForm" type="submit">Search</button>
+                </div>  
+
+                <a href="../studyGroup/studyGroup.html">Back to Study Groups</a>
+            </form>
+
+            <div id="studyGroupsContainer"></div>
+
+            <div id="message"></div>
+    </div>
+    <script src="../../js/searchForm.js"></script>
+</body>
+</html>

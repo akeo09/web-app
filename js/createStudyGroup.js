@@ -13,19 +13,18 @@ document.addEventListener('DOMContentLoaded', function() {
         */
         const studyGroupData = {
             name: document.getElementById('name').value,
-            isPublic: document.getElementById('public').checked,
-            maxParticipants: document.getElementById('maxParticipants').value,
-            startDate: document.getElementById('startDate').value,
-            endDate: document.getElementById('endDate').value,
-            meeting_times: Array.from(document.querySelectorAll('input[name="days"]:checked')).map(day => ({
+            is_public: document.getElementById('public').checked,
+            max_participants: document.getElementById('maxParticipants').value,
+            start_date: document.getElementById('startDate').value,
+            end_date: document.getElementById('endDate').value,
+            /*meeting_times: Array.from(document.querySelectorAll('input[name="days"]:checked')).map(day => ({
                 day: day.value,
                 time: document.getElementById('time').value,
                 location: document.getElementById('location').value
-            })),
+            })),*/
             description: document.getElementById('description').value,
             school: document.getElementById('school').value,
-            courseNum: document.getElementById('courseNum').value,
-            participants: document.getElementById('participants').value
+            course_number: document.getElementById('courseNum').value,
         };
 
         createGroup(studyGroupData);
@@ -46,11 +45,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             console.log('Response status:', response.status);
-            const data = await response.json();
-            console.log('Response data:', data);
+            //const data = await response.json();
+            //console.log('Response data:', data);
 
             if (response.ok) {
-                alert(data.message);
+                alert("group created");
                 window.location.href = '../pages/studyGroup/studyGroup.html';
             } else {
                 const errorData = await response.json();
