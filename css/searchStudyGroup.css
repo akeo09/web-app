@@ -1,0 +1,92 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    align-items: center;
+    background-color: grey;
+    display: flex;
+    justify-content: center;
+    height: 150vh;
+}
+
+.container {
+    padding: 16px;
+    background-color: lightgrey;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 65%;
+    
+}
+
+input:not([type="checkbox"],[type="radio"]) {
+    position: relative;
+    width: 100%;
+    height: 30px;
+    border-radius: 10px;
+    border: 0;
+    box-sizing: border-box;
+    padding: 4px 20px 0;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.days {
+    padding-bottom: 20px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: lightseagreen;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.8;
+}
+
+button:hover {
+    opacity: 1;
+}
+
+a {
+    font-size: 15px;
+}
+
+/*************** MODAL CSS ******************/
+
+.modal {
+    display: none; /* Hide the modal by default */
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: lightgray;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 10px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}

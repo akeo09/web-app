@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="../../css/createStudyGroup.css">
+    <link rel="stylesheet" href="../../css/searchStudyGroup.css">
 </head>
 
 <body>
@@ -40,6 +40,79 @@
 
             <div id="message"></div>
     </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Study Group</h2>
+
+            <form id="editForm">
+                <label for="editName">Name</label>
+                <input id="editName" type="text">
+
+                <label for="editPublic">Public</label>
+                <input id="editPublic" type="checkbox">
+                <br>
+                <br>
+                <label for="editParticipants">Participants</label>
+                <input id="editParticipants" type="number">
+
+                <label for="editStartDate">Start Date</label>
+                <input id="editStartDate" type="date">
+
+                <label for="editEndDate">End Date</label>
+                <input id="editEndDate" type="date">
+
+                <fieldset>
+                    <legend>Meeting Times: </legend>
+                    <!------------------DAYSOFWEEK------------------------------>
+                    <div class="days">
+                        <label>Days of Week</label><br>
+                        <label for="monday">Monday</label>
+                        <input type="checkbox" id="monday" name="days" value="Monday">
+                        <br>
+                        <label for="tuesday">Tuesday</label>
+                        <input type="checkbox" id="tuesday" name="days" value="Tuesday">
+                        <br>
+                        <label for="wednesday">Wednesday</label>
+                        <input type="checkbox" id="wednesday" name="days" value="Wednesday">
+                        <br>
+                        <label for="thursday">Thursday</label>
+                        <input type="checkbox" id="thrusday" name="days" value="Thursday">
+                        <br>
+                        <label for="friday">Friday</label>
+                        <input type="checkbox" id="friday" name="days" value="Friday">
+                        <br>
+                        <label for="saturday">Saturday</label>
+                        <input type="checkbox" id="saturday" name="days" value="Saturday">
+                        <br>
+                        <label for="sunday">Sunday</label>
+                        <input type="checkbox" id="sunday" name="days" value="Sunday">
+                    </div>
+                <!------------------DAYSOFWEEK------------------------------>
+                    <label for="time">Time</label>
+                    <input id="time" type="time"> 
+
+                    <label for="location">Location</label>
+                    <input id="location" type="text">
+                </fieldset>
+
+                <label for="editDescription">Description</label>
+                <input id="edieditDescriptiontName" type="text">
+
+                <label for="editSchool">School</label>
+                <input id="editSchool" type="text">
+
+                <label for="editCourse">Course Number</label>
+                <input id="editCourse" type="text">
+
+                <div class="button">
+                    <button id="saveButton" type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="../../js/searchForm.js"></script>
 </body>
 </html>

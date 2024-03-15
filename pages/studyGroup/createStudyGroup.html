@@ -18,7 +18,7 @@
                 <br>
                 <br>
                 <label for="maxParticipants">Max Participants</label>
-                <input id="maxParticipants" type="text">
+                <input id="maxParticipants" type="number">
 
                 <label for="startDate">Start Date</label>
                 <input id="startDate" type="date">
@@ -28,36 +28,9 @@
 
                 <fieldset>
                     <legend>Meeting Times: </legend>
-                    <!------------------DAYSOFWEEK------------------------------>
-                    <div class="days">
-                        <label>Days of Week</label><br>
-                        <label for="monday">Monday</label>
-                        <input type="checkbox" id="monday" name="days" value="Monday">
-                        <br>
-                        <label for="tuesday">Tuesday</label>
-                        <input type="checkbox" id="tuesday" name="days" value="Tuesday">
-                        <br>
-                        <label for="wednesday">Wednesday</label>
-                        <input type="checkbox" id="wednesday" name="days" value="Wednesday">
-                        <br>
-                        <label for="thursday">Thursday</label>
-                        <input type="checkbox" id="thrusday" name="days" value="Thursday">
-                        <br>
-                        <label for="friday">Friday</label>
-                        <input type="checkbox" id="friday" name="days" value="Friday">
-                        <br>
-                        <label for="saturday">Saturday</label>
-                        <input type="checkbox" id="saturday" name="days" value="Saturday">
-                        <br>
-                        <label for="sunday">Sunday</label>
-                        <input type="checkbox" id="sunday" name="days" value="Sunday">
-                    </div>
-                <!------------------DAYSOFWEEK------------------------------>
-                    <label for="time">Time</label>
-                    <input id="time" type="time"> 
+                        <div id="meetingTimesContainer"></div>
 
-                    <label for="location">Location</label>
-                    <input id="location" type="text">
+                        <button type="button" id="addMeetingTime">Add Meeting Time</button>
                 </fieldset>
 
                 <label for="description">Description</label>
@@ -72,7 +45,7 @@
                 <div class="button">
                     <button id="createStudyGroupForm" type="submit">Create</button>
                 </div>                
-                <a href="../../index.html">Back to Home</a>
+                <a href="../studyGroup/studyGroup.html">Back to Study Groups</a>
             </form>
 
             <div id="message"></div>

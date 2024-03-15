@@ -3,14 +3,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     createStudyGroupForm.addEventListener('submit', async function (event) {
         event.preventDefault();
-    
-        /*const token = localStorage.getItem('token');
-        console.log ("token: " + token);
-        if(!token) {
-            alert('you must be logged in first');
-            return;
+
+        const meetingTimes = [];
+        for(let i = 1; i < meetingTimeIndex; i++) {
+            const day = document.getElementById(`day${i}`).value;
+            const time = document.getElementById(`time${i}`).value;
+            const location = document.getElementById(`location${i}`).value;
+
+            meetingTimes.push({ day, time, location });
         }
-        */
+
         const studyGroupData = {
             name: document.getElementById('name').value,
             is_public: document.getElementById('public').checked,
@@ -22,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 time: document.getElementById('time').value,
                 location: document.getElementById('location').value
             })),*/
+            meeting_times: meetingTimes,
             description: document.getElementById('description').value,
             school: document.getElementById('school').value,
             course_number: document.getElementById('courseNum').value,
@@ -29,6 +32,30 @@ document.addEventListener('DOMContentLoaded', function() {
 
         createGroup(studyGroupData);
     });
+
+    const addMeetingTimeBtn = document.getElementById('addMeetingTime');
+    const meetingTimesContainer = document.getElementById('meetingTimesContainer');
+
+    let meetingTimeIndex = 1;
+
+    addMeetingTimeBtn.addEventListener('click', function() {
+        meetingTimeIndex++;
+
+        const meetingTimeDiv = document.createElement('div');
+        meetingTimeDiv.classList.add('meeting-time');
+
+        meetingTimeDiv.innerHTML = `
+            <label for="day${meetingTimeIndex}">Day:</label>
+            <input type="text" id="day${meetingTimeIndex}" name="day${meetingTimeIndex}" required>
+            <label for="time${meetingTimeIndex}">Time:</label>
+            <input type="time" id="time${meetingTimeIndex}" name="time${meetingTimeIndex}" required>
+            <label for="location${meetingTimeIndex}">Location:</label>
+            <input type="text" id="location${meetingTimeIndex}" name="location${meetingTimeIndex}" required>
+            `;
+
+        meetingTimesContainer.appendChild(meetingTimeDiv);
+    })
+
     async function createGroup(studyGroupData) {
         const token = localStorage.getItem('token');
 
