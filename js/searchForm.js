@@ -1,9 +1,17 @@
 document.addEventListener("DOMContentLoaded", function() {
     const searchForm = document.getElementById("searchForm");
     const messageDiv = document.getElementById("message");
-
+    const userData = JSON.parse(localStorage.getItem('user'));
+    const loggedInUserId = userData._id;
+    
     searchForm.addEventListener("submit", async function(event) {
         event.preventDefault();
+        const token = localStorage.getItem('token');
+        console.log("token: ", token)
+        if (!token) {
+            alert('Sign in to search.');
+            return;
+        }
 
         const search = document.getElementById("search").value;
         const ongoing = document.getElementById("ongoing").checked;
@@ -21,8 +29,6 @@ document.addEventListener("DOMContentLoaded", function() {
             endDate: endDate
         }
 
-        const token = localStorage.getItem('token');
-        
         //const url = "https://study-api-server.azurewebsites.net/studygroups";
         const url = "http://localhost:3000/studygroups?" + new URLSearchParams(queryParams).toString();
         try {
@@ -33,6 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             });
             console.log(response)
+            console.log(token);
             if (response.ok) {
                 const data = await response.json();
                 console.log(data);
@@ -75,122 +82,117 @@ document.addEventListener("DOMContentLoaded", function() {
             endDateElement.textContent = "End Date: " + formatDate(studyGroup.end_date);
             cardBody.appendChild(endDateElement);
 
-            const editButton = document.createElement("button");
+            const ownerId = studyGroup.owner;
+            console.log("Owner ID: ", ownerId);
+            console.log("Logged In User ID: ", loggedInUserId);
+
+            const isOwner = ownerId === loggedInUserId;
+            console.log("is owner: ", isOwner);
+
             const modal = document.getElementById("editModal");
             const closeBtn = modal.querySelector(".close");
+            let selectedStudyGroupId;
 
-            editButton.textContent = "Edit";
-            editButton.classList.add("btn", "btn-primary");
-            editButton.addEventListener("click", () => {
-                modal.style.display = "block";
-            })
+            if (isOwner) {
+                const editButton = document.createElement("button");
+                editButton.textContent = "Edit";
+                editButton.classList.add("btn", "btn-primary");
+                editButton.addEventListener("click", () => {
+                    selectedStudyGroupId = studyGroup._id;
+                    modal.style.display = "block";
+                    console.log("Study Group ID: ", selectedStudyGroupId);
+                    populateModal(studyGroup);
+                }) 
+                cardBody.appendChild(editButton);
+            }
 
             closeBtn.addEventListener("click", function() {
                 modal.style.display = "none";
             })
-
-            window.addEventListener("click", function(event) {
-                if (event.target === modal) {
-                    modal.style.display = "none";
-                }
-            });
             
+            //format date into use readable format
             function formatDate(dateString) {
                 const options = { year: 'numeric', month: 'long', day: 'numeric' };
                 return new Date(dateString).toLocaleDateString(undefined, options);
             }
             
-            // Assuming startDateString, endDateString, and any other date strings you have
             const startDateString = "2024-02-23T00:00:00.000Z";
             const endDateString = "2024-03-25T00:00:00.000Z";
 
             const formattedStartDate = formatDate(startDateString);
             const formattedEndDate = formatDate(endDateString);
 
-            console.log("Start Date:", formattedStartDate); // Output: "Start Date: 2024-02-17"
-            console.log("End Date:", formattedEndDate); // Output: "End Date: 2024-03-25"
+            console.log("Start Date:", formattedStartDate); 
+            console.log("End Date:", formattedEndDate); 
 
-            cardBody.appendChild(editButton);
-
+            //display study groups
             card.appendChild(cardBody);
 
             studyGroupsContainer.appendChild(card);
+        
+            //populate edit modal
+            function populateModal(studyGroup) {
+                const formattedStartDate = studyGroup.start_date.substring(0, 10);
+                const formattedEndDate = studyGroup.end_date.substring(0, 10);
+
+                editName.value = studyGroup.name;
+                editPublic.checked = studyGroup.is_public;
+                editDescription.value = studyGroup.description;
+                editParticipants.value = studyGroup.max_participants;
+                editStartDate.value = formattedStartDate; //studyGroup.start_date; 
+                editEndDate.value = formattedEndDate; //studyGroup.end_date;
+                editSchool.value = studyGroup.school;
+                editCourse.value = studyGroup.course_number;
+
+                //const editForm = document.getElementById('editForm');
+                const saveButton = document.getElementById('saveButton');
+                saveButton.addEventListener("click", async function(event) {
+                    event.preventDefault();
+
+                    const editedForm = {
+                        name: document.getElementById('editName').value,
+                        is_public: document.getElementById('editPublic').checked,
+                        description: document.getElementById('editDescription').value,
+                        max_participants: document.getElementById('editParticipants').value,
+                        start_date: new Date(document.getElementById('editStartDate').value),
+                        end_date: new Date(document.getElementById('editEndDate').value),
+                        school: document.getElementById('editSchool').value,
+                        course_number: document.getElementById('editCourse').value
+                    };
+                    await saveChanges(studyGroup._id, editedForm);
+                });
+            };
+            async function saveChanges(studyGroupId, editedForm) {
+                console.log("Study Group Id: ", studyGroupId)
+                const token = localStorage.getItem('token');
+                console.log("token: ", token)
+                try {
+                    const url = `http://localhost:3000/studygroup/${studyGroupId}`;
+                    const response = await fetch(url, {
+                        method: 'PATCH',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(editedForm)
+                    })
+                    //console.log("Study Group Id: ", selectedStudyGroupId)
+                    //const responseData = await response.json();
+                    console.log(await response.text());
+                    if(response.ok) {
+                        const updatedStudyGroup = document.createElement('p');
+                        updatedStudyGroup.textContent = 'Success!';
+                        updatedStudyGroup.style.color = 'green';
+                        modal.appendChild(updatedStudyGroup);
+                        console.log("Changes saved");
+                        //modal.style.display = "none";
+                    } else {
+                        console.error("Failed to update study group: ", response.statusText);
+                    }
+                } catch(e) {
+                    console.error("Error: ", e)
+                }
+            };
         })
     }
-    
-    const editForm = document.getElementById("editForm");
-    const editName = document.getElementById("editName");
-    const editPublic = document.getElementById("editPublic");
-    const editDescription = document.getElementById("editDescription");
-    const editParticipants = document.getElementById("editParticipants");
-    const editStartDate = document.getElementById("editStartDate");
-    const editEndDate = document.getElementById("editEndDate");
-    const editSchool = document.getElementById("editSchool");
-    const editCourse = document.getElementById("editCourse");
-
-    let currentStudyGroup;
-    let selectedStudyGroupId;
-    studyGroupsContainer.addEventListener("click", function(event, studyGroup) {
-        //if(event.target.classList.contains("editButton")) {
-            populateModal(currentStudyGroup);
-            modal.style.display = "block";
-        //}
-        console.log("study group id:", selectedStudyGroupId)
-    });
-
-    function populateModal(studyGroup) {
-        editName.value = studyGroup.name;
-        editPublic.checked = studyGroup.is_public;
-        editDescription.value = studyGroup.description;
-        editParticipants.value = studyGroup.max_participants;
-        editStartDate.value = studyGroup.start_date;
-        editEndDate.value = studyGroup.end_date;
-        editSchool.value = studyGroup.school;
-        editCourse.value = studyGroup.course_number
-    }
-
-    saveButton.addEventListener("submit", async function(event) {
-        event.preventDefault();
-
-        const studyGroupId = event.target.dataset.index;
-        localStorage.setItem('selectedStudyGroupId', studyGroupId);
-        selectedStudyGroupId = localStorage.getItem('selectedStudyGroupId');
-        currentStudyGroup = studyGroupId.find(group => group._id === selectedStudyGroupId);
-
-        await saveChanges(studyGroupId._id)
-    });
-
-    async function saveChanges(selectedStudyGroupId) {
-        try {
-            const token = localStorage.getItem('token');
-            const url = `http://localhost:3000/studygroup/${selectedStudyGroupId}`;
-            const response = await fetch(url, {
-                method: "PATCH",
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    name: editName.value,
-                    is_public: editPublic.checked,
-                    max_participants: editParticipants.value,
-                    start_date: editStartDate.value,
-                    end_date: editEndDate.value,
-                    school: editSchool.value,
-                    course_number: editCourse.value
-                })
-            })
-            if(response.ok) {
-                const updatedStudyGroup = await response.json();
-                console.log("Updated study group: ", updatedStudyGroup);
-
-                //modal.style.display = "none";
-            } else {
-                console.error("Failed to update study group");
-            }
-        } catch(e) {
-            console.error("Error: ", e)
-        }
-    };
-
 });
