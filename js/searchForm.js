@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         updatedStudyGroup.style.color = 'green';
                         modal.appendChild(updatedStudyGroup);
                         console.log("Changes saved");
-                        //modal.style.display = "none";
+                        modal.style.display = "none";
                     } else {
                         console.error("Failed to update study group: ", response.statusText);
                     }

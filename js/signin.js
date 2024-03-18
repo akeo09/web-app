@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
             password: password
         };
 
-        login(data);
+        await login(data);
 
         async function login(data) {
             //const url = "https://study-api-server.azurewebsites.net/user/login";
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log("user data stored: ", responseData.user);
                     console.log("Token stored: ", responseData.token);
 
-                    //window.location.href = '../main.html'; //redirect to main
+                    window.location.href = '../main.html'; //redirect to main
                 } else {
                     const errorData = await response.json();
                     alert(errorData.message);
