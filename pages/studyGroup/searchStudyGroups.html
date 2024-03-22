@@ -10,11 +10,18 @@
     <h1>Search for Study Groups</h1>
     <hr>
             <form id="searchForm">
+                <label for="myGroups">Search my study groups only:</label>
+                <input id="myGroups" type="checkbox">
+                <br>
+                <br>
                 <label for="search">Search Key Word</label>
                 <input id="search" type="text">
 
-                <label for="ongoing">Is the group ongoing?</label>
-                <input id="ongoing" type="checkbox">
+                <label>Is the group ongoing?</label>
+                <label for="ongoingYes">Yes</label>
+                <input id="ongoingYes" type="radio" name="ongoiong" value="true">
+                <label for="ongoingNo">No</label>
+                <input id="ongoingNo" type="radio" name="ongoiong" value="false">
                 <br>
                 <br>
                 <label for="skip">Skip</label>
@@ -63,39 +70,12 @@
                 <label for="editEndDate">End Date</label>
                 <input id="editEndDate" type="date">
 
-                <!--<fieldset>
+                <fieldset>
                     <legend>Meeting Times: </legend>
+                        <div id="meetingTimesContainer"></div>
 
-                    <div class="days">
-                        <label>Days of Week</label><br>
-                        <label for="monday">Monday</label>
-                        <input type="checkbox" id="monday" name="days" value="Monday">
-                        <br>
-                        <label for="tuesday">Tuesday</label>
-                        <input type="checkbox" id="tuesday" name="days" value="Tuesday">
-                        <br>
-                        <label for="wednesday">Wednesday</label>
-                        <input type="checkbox" id="wednesday" name="days" value="Wednesday">
-                        <br>
-                        <label for="thursday">Thursday</label>
-                        <input type="checkbox" id="thrusday" name="days" value="Thursday">
-                        <br>
-                        <label for="friday">Friday</label>
-                        <input type="checkbox" id="friday" name="days" value="Friday">
-                        <br>
-                        <label for="saturday">Saturday</label>
-                        <input type="checkbox" id="saturday" name="days" value="Saturday">
-                        <br>
-                        <label for="sunday">Sunday</label>
-                        <input type="checkbox" id="sunday" name="days" value="Sunday">
-                    </div>
-
-                    <label for="time">Time</label>
-                    <input id="time" type="time"> 
-
-                    <label for="location">Location</label>
-                    <input id="location" type="text">
-                </fieldset>-->
+                        <button type="button" id="addMeetingTime">Add Meeting Time</button>
+                </fieldset>
 
                 <label for="editDescription">Description</label>
                 <input id="editDescription" type="text">
