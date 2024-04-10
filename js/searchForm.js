@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const userData = JSON.parse(localStorage.getItem('user'));
     const loggedInUserId = userData._id;
     const myGroups = document.getElementById("myGroups");
+    const modal = document.getElementById("editModal");
+    const closeBtn = modal.querySelector(".close");
    
     //submit search form after edit is saved
     function submitSearchForm() {
@@ -63,20 +65,20 @@ document.addEventListener("DOMContentLoaded", function() {
                     "Authorization": `Bearer ${token}`
                 }
             });
-            console.log(response)
-            console.log(token);
+            //console.log(response)
+            //console.log(token);
             if (response.ok) {
                 const data = await response.json();
-                console.log(data);
+                //console.log(data);
                 displayStudyGroups(data); 
-                console.log("Search Parameters: ", queryParams);
+                //console.log("Search Parameters: ", queryParams);
             }
                       
         } catch (error) {
             console.error("Error:", error);
             messageDiv.textContent = "Failed to retrieve study groups. Please try again.";
         }
-        console.log(url);
+        //console.log(url);
     });
     
 
@@ -118,7 +120,12 @@ document.addEventListener("DOMContentLoaded", function() {
             `;
 
         container.appendChild(meetingTimeDiv);
-
+        
+        const selectElement = meetingTimeDiv.querySelector('select[name="meetingDay"]');
+        if(meeting.day) {
+            selectElement.value = meeting.day;
+        }
+        
         const deleteBtn = meetingTimeDiv.querySelector('.deleteMeetingTime');
         deleteBtn.addEventListener('click', function() {
             container.removeChild(meetingTimeDiv);
@@ -126,7 +133,8 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     function displayStudyGroups(studyGroup) {
-        //const dateOptions = {month: 'long', day: 'numeric', year: 'numeric'};
+        console.log('Recieved studyGroup: ', studyGroup)
+        console.log('Participants: ', studyGroup.partiipants)
 
         const studyGroupsContainer = document.getElementById("studyGroupsContainer");
         studyGroupsContainer.innerHTML = ""; //clear previous content
@@ -147,7 +155,7 @@ document.addEventListener("DOMContentLoaded", function() {
             descriptionElement.classList.add("card-text");
             descriptionElement.textContent = studyGroup.description;
             cardBody.appendChild(descriptionElement);
-
+            
             const startDateElement = document.createElement("p");
             startDateElement.textContent = "Start Date: " + formatDate(studyGroup.start_date);
             cardBody.appendChild(startDateElement);
@@ -156,30 +164,140 @@ document.addEventListener("DOMContentLoaded", function() {
             endDateElement.textContent = "End Date: " + formatDate(studyGroup.end_date);
             cardBody.appendChild(endDateElement);
 
+            const formattedMeetingTimes = formatMeetingTimes(studyGroup.meeting_times);
+            formattedMeetingTimes.forEach(meetingInfo => {
+                cardBody.appendChild(meetingInfo);
+            });
+           
+            const schoolElement = document.createElement("p");
+            schoolElement.textContent = "School: " + studyGroup.school;
+            cardBody.appendChild(schoolElement);
+
+            const courseNumElement = document.createElement("p");
+            courseNumElement.textContent = "Course Number: " + studyGroup.course_number;
+            cardBody.appendChild(courseNumElement);
+            
+            const participantsElement = document.createElement("p");
+            participantsElement.textContent = "Participants: " + studyGroup.participants.map(participant => participant.username).join(', ');
+            cardBody.appendChild(participantsElement);
+            
             const ownerId = studyGroup.owner;
-            console.log("Owner ID: ", ownerId);
-            console.log("Logged In User ID: ", loggedInUserId);
+            //console.log("Owner ID: ", ownerId);
+            //console.log("Logged In User ID: ", loggedInUserId);
 
             const isOwner = ownerId === loggedInUserId;
-            console.log("is owner: ", isOwner);
+            //console.log("is owner: ", isOwner);
 
-            const modal = document.getElementById("editModal");
-            const closeBtn = modal.querySelector(".close");
-            let selectedStudyGroupId;
+            //let selectedStudyGroupId;
+
+            //const isMember = studyGroup.participants?.includes(loggedInUserId);
 
             if (isOwner) {
                 const editButton = document.createElement("button");
                 editButton.textContent = "Edit";
                 editButton.classList.add("btn", "btn-primary");
                 editButton.addEventListener("click", () => {
-                    selectedStudyGroupId = studyGroup._id;
+                    const selectedStudyGroupId = studyGroup._id;
                     modal.style.display = "block";
                     console.log("Study Group ID: ", selectedStudyGroupId);
-                    populateModal(studyGroup);
+                    populateModal(studyGroup, selectedStudyGroupId);
                 }) 
                 cardBody.appendChild(editButton);
+
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+                deleteButton.classList.add("btn", "btn-danger");
+                deleteButton.addEventListener("click", () => {
+                    const confirmed = confirm("Are you sure you want to delete this study group?");
+                    if (confirmed) {
+                        deleteStudyGroup(studyGroup._id);
+                    }
+                });
+                cardBody.appendChild(deleteButton);
+            } else {
+                const button = document.createElement("button");
+                //button.classList.add("btn");
+                
+                //const userId = JSON.parse(localStorage.getItem('user'))._id;
+                //console.log("user id:", userId)
+                //console.log('Participant IDs: ', studyGroup.participants);
+                //const isMember = studyGroup.participants?.includes(userId);
+                //console.log('isMember: ', isMember)
+                const isParticipant = studyGroup.participants && studyGroup.participants.some(participant => participant._id === loggedInUserId);
+                console.log(isParticipant)
+
+                if(isParticipant) {
+                    button.textContent = 'Leave';
+                    button.addEventListener("click", async () => {
+                        const success = await joinOrLeaveStudyGroup(studyGroup._id, 'remove');
+                        if (success) {
+                            button.textContent = 'Join';
+                        }
+                    });
+                } else {
+                    button.textContent = 'Join';
+                    button.addEventListener("click", async () => {
+                        const success = await joinOrLeaveStudyGroup(studyGroup._id, 'add');
+                        if (success) {
+                            button.textContent = 'Leave';
+                        }
+                    })
+                }
+                cardBody.appendChild(button);
+                
             }
 
+            card.appendChild(cardBody);
+            studyGroupsContainer.appendChild(card);
+        });
+
+        async function joinOrLeaveStudyGroup(studyGroupId, action) {
+            const token = localStorage.getItem('token');
+            const userId = JSON.parse(localStorage.getItem('user'))._id;
+
+            console.log("Action:", action)
+            try {
+                const url = `http://localhost:3000/studygroup/${studyGroupId}/participants?${action}=true`;
+                const response = await fetch(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ userId: userId })
+                });
+                console.log(url)
+                
+                if (response.ok) {
+                    const message = await response.text();
+                    console.log(message);
+
+                    //button.textContent = action === 'add' ? 'Leave' : 'Join';
+                    submitSearchForm();
+                    return true;
+                } else {
+                    console.error('Failed to join/leave study group:', response.statusText);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
+            }
+        }
+        
+        function formatMeetingTimes(meetingTimes) {
+            const formattedTimes = meetingTimes.map(meeting => {
+                const meetingInfo = document.createElement('div');
+                meetingInfo.innerHTML = `
+                    <br>
+                    <p>Day: ${meeting.day}</p>
+                    <p>Time: ${meeting.time}</p>
+                    <p>Location: ${meeting.location}</p>
+                `;
+                return meetingInfo;
+            });
+            return formattedTimes;
+        }
             closeBtn.addEventListener("click", function() {
                 modal.style.display = "none";
             })
@@ -196,14 +314,11 @@ document.addEventListener("DOMContentLoaded", function() {
             const formattedStartDate = formatDate(startDateString);
             const formattedEndDate = formatDate(endDateString);
 
-            console.log("Start Date:", formattedStartDate); 
-            console.log("End Date:", formattedEndDate); 
+            //console.log("Start Date:", formattedStartDate); 
+            //console.log("End Date:", formattedEndDate); 
 
-            card.appendChild(cardBody);
 
-            studyGroupsContainer.appendChild(card);
-
-            function populateModal(studyGroup) {
+            function populateModal(studyGroup, selectedStudyGroupId) {
                 const formattedStartDate = studyGroup.start_date.substring(0, 10);
                 const formattedEndDate = studyGroup.end_date.substring(0, 10);
 
@@ -217,9 +332,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 editSchool.value = studyGroup.school;
                 editCourse.value = studyGroup.course_number;
                 
+                meetingTimesContainer.innerHTML = "";
+
                 studyGroup.meeting_times.forEach(meeting => {
                     addMeetingTimes(meetingTimesContainer, meeting);
-                });
+                });        
                 
                 //const editForm = document.getElementById('editForm');
                 const saveButton = document.getElementById('saveButton');
@@ -237,16 +354,39 @@ document.addEventListener("DOMContentLoaded", function() {
                         school: document.getElementById('editSchool').value,
                         course_number: document.getElementById('editCourse').value
                     };
-                    await saveChanges(studyGroup._id, editedForm);
+                    await saveChanges(selectedStudyGroupId, editedForm);
                 });
             };
 
-            async function saveChanges(studyGroupId, editedForm) {
-                console.log("Study Group Id: ", studyGroupId)
+            async function deleteStudyGroup(studyGroupId) {
+                const token = localStorage.getItem('token');
+                try {
+                    const url = `http://localhost:3000/studygroup/${studyGroupId}`;
+                    const response = await fetch(url, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (response.ok) {
+                        console.log("Study group deleted successfully.");
+                        // Optionally, update UI or reload study groups list
+                    } else {
+                        console.error("Failed to delete study group: ", response.statusText);
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                }
+                reloadPageWithSearchParams();
+            }
+            
+
+            async function saveChanges(selectedStudyGroupId, editedForm) {
+                //console.log("Study Group Id: ", studyGroupId)
                 const token = localStorage.getItem('token');
                 //console.log("token: ", token)
                 try {
-                    const url = `http://localhost:3000/studygroup/${studyGroupId}`;
+                    const url = `http://localhost:3000/studygroup/${selectedStudyGroupId}`;
                     const response = await fetch(url, {
                         method: 'PATCH',
                         headers: {
@@ -255,7 +395,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         },
                         body: JSON.stringify(editedForm)
                     })
-                    console.log(await response.text());
+                    //console.log(await response.text());
                     if(response.ok) {
                         //modal.appendChild(updatedStudyGroup);
                         console.log("Changes saved");
@@ -267,8 +407,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     console.error("Error: ", e)
                 }
                 reloadPageWithSearchParams();
-            };
-        }); 
+            }; 
 
             //reload page with former search params
         function reloadPageWithSearchParams() {

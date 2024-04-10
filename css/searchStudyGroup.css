@@ -90,3 +90,8 @@ a {
     text-decoration: none;
     cursor: pointer;
 }
+
+.btn-danger {
+    background-color: rgb(231, 54, 54);
+    border-color: rgb(231, 54, 54);
+}
