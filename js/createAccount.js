@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const createAccountForm = document.getElementById('createAccountForm');
+    
     createAccountForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
@@ -9,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const major = document.getElementById('major').value;
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirmPassword').value;
+        const ig_username = document.getElementById('ig_username').value;
+        const ig_password = document.getElementById('ig_password').value;
 
         const data = {
             username: username,
@@ -17,7 +20,9 @@ document.addEventListener('DOMContentLoaded', function() {
             major: [major],
             school: school,
             password: password,
-            confirmPassword: confirmPassword
+            confirmPassword: confirmPassword,
+            ig_username: ig_username,
+            ig_password: ig_password
         };
 
         if (password !== confirmPassword) {
@@ -29,7 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     async function createAccount(data) {
-        const url = "https://study-api-server.azurewebsites.net/user";
+        //const url = "https://study-api-server.azurewebsites.net/user";
+        const url = "http://localhost:3000/user";
 
         try {
             const response = await fetch(url, {
@@ -46,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.location.href = '../verify.html'; //redirect to login
             } else {
                 const errorData = await response.json();
-                alert(errorData.message);
+                alert(errorData.message)
             }
         }
         catch(error) {

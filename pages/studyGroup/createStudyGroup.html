@@ -48,6 +48,33 @@
                 <a href="../studyGroup/studyGroup.html">Back to Study Groups</a>
             </form>
 
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <p>Do you want to post to Instagram?</p>
+                    <button id="yesBtn">Yes</button>
+                    <button id="noBtn">No</button>
+                </div>
+            </div>
+
+            <div id="instagramModal" class="modal">
+                <div class="modal-content">
+                  <span id="closeInstagramModal" class="close">&times;</span>
+                  <p>Enter your Instagram information:</p>
+                  <form id="instagramForm">
+                    <div class="form-group">
+                      <label for="ig_username">Username:</label>
+                      <input type="text" id="ig_username" name="ig_username">
+                    </div>
+                    <div class="form-group">
+                      <label for="ig_password">Password:</label>
+                      <input type="password" id="ig_password" name="ig_password">
+                    </div>
+                    <button id="instagramSubmit" type="submit">Submit</button>
+                  </form>
+                </div>
+            </div>
+
             <div id="message"></div>
     </div>
     <script src="../../js/createStudyGroup.js"></script>

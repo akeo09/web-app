@@ -7,6 +7,15 @@ document.addEventListener("DOMContentLoaded", function() {
     const modal = document.getElementById("editModal");
     const closeBtn = modal.querySelector(".close");
    
+
+    const instaModal = document.getElementById('myModal');
+    const instagramModal = document.getElementById('instagramModal');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    //const closeBtn = document.getElementsByClassName('close')[0];
+    //const closeInstagramModalBtn = document.getElementById('closeIstagramModal');
+    const instagramForm = document.getElementById('instagramForm');
+
     //submit search form after edit is saved
     function submitSearchForm() {
         searchForm.dispatchEvent(new Event('submit'));        
@@ -140,6 +149,8 @@ document.addEventListener("DOMContentLoaded", function() {
         studyGroupsContainer.innerHTML = ""; //clear previous content
 
         studyGroup.forEach (studyGroup => {
+            const ownerId = studyGroup.owner._id;
+
             const card = document.createElement("div");
             card.classList.add("card");
 
@@ -150,7 +161,12 @@ document.addEventListener("DOMContentLoaded", function() {
             nameElement.classList.add("card-title");
             nameElement.textContent = studyGroup.name;
             cardBody.appendChild(nameElement);
-
+            
+            const ownerElement = document.createElement("h4");
+            ownerElement.classList.add("card-title");
+            ownerElement.textContent = 'Owner: ' + studyGroup.owner.username;
+            cardBody.appendChild(ownerElement);
+            
             const descriptionElement = document.createElement("p");
             descriptionElement.classList.add("card-text");
             descriptionElement.textContent = studyGroup.description;
@@ -181,7 +197,6 @@ document.addEventListener("DOMContentLoaded", function() {
             participantsElement.textContent = "Participants: " + studyGroup.participants.map(participant => participant.username).join(', ');
             cardBody.appendChild(participantsElement);
             
-            const ownerId = studyGroup.owner;
             //console.log("Owner ID: ", ownerId);
             //console.log("Logged In User ID: ", loggedInUserId);
 
@@ -239,6 +254,20 @@ document.addEventListener("DOMContentLoaded", function() {
                     button.addEventListener("click", async () => {
                         const success = await joinOrLeaveStudyGroup(studyGroup._id, 'add');
                         if (success) {
+                            instaModal.style.display = "block";
+                            yesBtn.onclick = async function() {
+                                instaModal.style.display = "none";
+                                const userInstagramInfo = await getUserInstagramInfo(loggedInUserId);
+                                console.log('logged in user:', loggedInUserId)
+                                if (!userInstagramInfo) {
+                                    instagramModal.style.display = "block";
+                                } else {
+                                    await createPostToInstagram(userInstagramInfo);
+                                }
+                            }
+                            noBtn.onclick = function() {
+                                instaModal.style.display = "none";
+                            }
                             button.textContent = 'Leave';
                         }
                     })
@@ -250,6 +279,107 @@ document.addEventListener("DOMContentLoaded", function() {
             card.appendChild(cardBody);
             studyGroupsContainer.appendChild(card);
         });
+
+        async function getUserInstagramInfo(loggedInUserId) {
+            const url = `http://localhost:3000/user/insta/${loggedInUserId}`;
+            console.log(loggedInUserId)
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+    
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(data)
+    
+                    if(data.ig_username || data.ig_password) {
+                        return {username: data.ig_username, password: data.ig_password };
+                    } else {
+                        return null;
+                    }
+                } else {
+                    throw new Error('Failed to fetch Instagram information');
+                }
+            } catch (error) {
+                console.error('Error fetching Instagram information:', error);
+                alert('Unable to fetch Instagram information');
+                return null; // Return null if there's an error
+            }
+        }
+    
+        async function createPostToInstagram(userInstagramInfo) {
+            const ig_username = userInstagramInfo.ig_username;
+            const ig_password = userInstagramInfo.ig_password;
+    
+            const data = {
+                caption: "I just created a study group!",
+                image_url: "https://t4.ftcdn.net/jpg/01/24/41/03/360_F_124410367_M538eQuhp4ItuXE2RVt5m75kODW2nTZz.jpg"
+            };
+    
+            try {
+                const url = "http://localhost:3000/user/insta-post";
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                
+                if(response.ok) {
+                    const message = await response.text();
+                    console.log(message);
+                    return true;
+                } else {
+                    console.error('Unable to post to Instagram');
+                    return false;
+                }
+            } catch(e) {
+                console.log('Error posting to Instagrma: ', e);
+                return false;
+            }
+        };
+
+        instagramForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+    
+            const token = localStorage.getItem('token');
+
+            const ig_username = document.getElementById('ig_username').value;
+            const ig_password = document.getElementById('ig_password').value;
+    
+            const data = {
+                ig_username: ig_username,
+                ig_password: ig_password
+            };
+    
+            try {
+                const url = "http://localhost:3000/user/insta";
+                const response = await fetch(url, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Failed to send notification');
+                }
+    
+                const dataResponse = await response.text();
+                console.log('Info updated successfully ', dataResponse);
+                alert('Instagram info updated successfully');
+                instaModal.style.display = "none";
+            } catch(e) {
+                console.log('Error signing in:', e);
+                alert('Unable to sign in');
+            }
+        })
 
         async function joinOrLeaveStudyGroup(studyGroupId, action) {
             const token = localStorage.getItem('token');

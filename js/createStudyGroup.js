@@ -1,7 +1,19 @@
 document.addEventListener('DOMContentLoaded', function() {    
+    const modal = document.getElementById('myModal');
+    const instagramModal = document.getElementById('instagramModal');
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    //const closeBtn = document.getElementsByClassName('close')[0];
+    //const closeInstagramModalBtn = document.getElementById('closeIstagramModal');
+    const instagramForm = document.getElementById('instagramForm');
+
     const createStudyGroupForm = document.getElementById('studyGroupForm');
     const meetingTimesContainer = document.getElementById('meetingTimesContainer');
     const addMeetingTimeBtn = document.getElementById('addMeetingTime');
+    
+    const userData = JSON.parse(localStorage.getItem('user'));
+    const loggedInUserId = userData._id;
+    console.log(loggedInUserId)
 
     addMeetingTimeBtn.addEventListener('click', function() {
         addMeetingTimes(meetingTimesContainer);
@@ -49,9 +61,60 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    let studyGroupData;
+
     createStudyGroupForm.addEventListener('submit', async function (event) {
         event.preventDefault();
+                
+        modal.style.display = "block";
 
+        function handleResponse(response) {
+            modal.style.display = "none";
+            if(response) {
+                studyGroupData = {
+                    name: document.getElementById('name').value,
+                    is_public: document.getElementById('public').checked,
+                    max_participants: document.getElementById('maxParticipants').value,
+                    start_date: document.getElementById('startDate').value,
+                    end_date: document.getElementById('endDate').value,
+                    meeting_times: getMeetingTimes(),
+                    description: document.getElementById('description').value,
+                    school: document.getElementById('school').value,
+                    course_number: document.getElementById('courseNum').value,
+                };
+            }
+            createGroup(studyGroupData);
+        }
+
+        yesBtn.onclick = async function() {
+            modal.style.display = "none";
+            const userInstagramInfo = await getUserInstagramInfo(loggedInUserId);
+            if (!userInstagramInfo) {
+                instagramModal.style.display = "block";
+            } else {
+                const success = await createPostToInstagram(userInstagramInfo);
+                if (success) {
+                    handleResponse(true);
+                } else {
+                    alert('Unable to post to Instagram')
+                }
+            }
+        }
+
+        noBtn.onclick = function() {
+            modal.style.display = "none";
+            handleResponse(true);
+        }
+        /*
+        closeBtn.onclick = function() {
+            modal.style.display = "none";
+            createGroup();
+        }
+        
+        closeInstagramModalBtn.onclick = function() {
+            modal.style.display = "none";
+        }
+        */
         function getMeetingTimes() {
             const meetingTimeDivs = document.querySelectorAll('.meetingTime');
             const meetingTimes = [];
@@ -63,23 +126,108 @@ document.addEventListener('DOMContentLoaded', function() {
                 meetingTimes.push({day, time, location});
             });
             return meetingTimes;
-        ;}
-
-        const studyGroupData = {
-            name: document.getElementById('name').value,
-            is_public: document.getElementById('public').checked,
-            max_participants: document.getElementById('maxParticipants').value,
-            start_date: document.getElementById('startDate').value,
-            end_date: document.getElementById('endDate').value,
-            meeting_times: getMeetingTimes(),
-            description: document.getElementById('description').value,
-            school: document.getElementById('school').value,
-            course_number: document.getElementById('courseNum').value,
-        };
-
-        createGroup(studyGroupData);
+        }
+        
     });
 
+    async function getUserInstagramInfo(loggedInUserId) {
+        const url = `http://localhost:3000/user/insta/${loggedInUserId}`;
+        console.log(loggedInUserId)
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                    console.log(data)
+    
+                    if(data.ig_username || data.ig_password) {
+                        return {username: data.ig_username, password: data.ig_password };
+                    } else {
+                        return null;
+                    }
+            } else {
+                throw new Error('Failed to fetch Instagram information');
+            }
+        } catch (error) {
+            console.error('Error fetching Instagram information:', error);
+            alert('Unable to fetch Instagram information');
+            return null; // Return null if there's an error
+        }
+    }
+
+    async function createPostToInstagram(userInstagramInfo) {
+        const ig_username = userInstagramInfo.ig_username;
+        const ig_password = userInstagramInfo.ig_password;
+
+        const data = {
+            caption: "I just created a study group!",
+            image_url: "https://t4.ftcdn.net/jpg/01/24/41/03/360_F_124410367_M538eQuhp4ItuXE2RVt5m75kODW2nTZz.jpg"
+        };
+
+        try {
+            const url = "http://localhost:3000/user/insta-post";
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            
+            if(response.ok) {
+                const message = await response.text();
+                console.log(message);
+                return true;
+            } else {
+                console.error('Unable to post to Instagram');
+                return false;
+            }
+        } catch(e) {
+            console.log('Error posting to Instagrma: ', e);
+            return false;
+        }
+    }
+
+    instagramForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const ig_username = document.getElementById('ig_username').value;
+        const ig_password = document.getElementById('ig_password').value;
+
+        const data = {
+            ig_username: ig_username,
+            ig_password: ig_password
+        };
+
+        try {
+            const url = "http://localhost:3000/user/insta";
+            const response = await fetch(url, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to send notification');
+            }
+
+            const dataResponse = await response.text();
+            console.log('Info updated successfully ', dataResponse);
+            alert('Instagram info updated successfully');
+        } catch(e) {
+            console.log('Error signing in:', e);
+            alert('Unable to sign in');
+        }
+    })
+    
     async function createGroup(studyGroupData) {
         const token = localStorage.getItem('token');
 
@@ -102,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('group create successfully');
                 alert("group created");
                 console.log('redirection to studyGroup.html...')
-                window.location.href = '../pages/studyGroup/studyGroup.html';
+                window.location.href = "../../pages/studyGroup/studyGroup.html"
             } else {
                 const errorData = await response.json();
                 alert(errorData.message);
