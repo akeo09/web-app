@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const signInLink = document.getElementById('signInLink');
     const logoutLink = document.getElementById('logoutLink');
     const studyGroupsTab = document.getElementById('studyGroupsTab');
+    const instagramInfo = document.getElementById('instagramInfo');
+    const notificationsTab = document.getElementById('notificationsTab');
 
     const user = localStorage.getItem('user');
     const token = localStorage.getItem('token');
@@ -18,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function() {
             logoutBtn.addEventListener('click', function(event) {
                 event.preventDefault();
 
-                const url = "https://study-api-server.azurewebsites.net/logout"
+                const url = "https://study-api-server.azurewebsites.net/user/logout";
                 //const url = "http://localhost:3000/user/logout";
 
                 fetch(url, {
@@ -34,6 +36,8 @@ document.addEventListener("DOMContentLoaded", function() {
                         signInLink.style.display = 'block';
                         logoutLink.style.display = 'none';
                         studyGroupsTab.style.display = 'none';
+                        instagramInfo.style.display = 'none';
+                        notificationsTab.style.display = 'none';
 
                         //window.location.href = 'pages/signin.html'; // Redirect to sign in page after logout
                     } else {
@@ -47,6 +51,8 @@ document.addEventListener("DOMContentLoaded", function() {
             signInLink.style.display = 'block';
             logoutLink.style.display = 'none';
             studyGroupsTab.style.display = 'none';
+            instagramInfo.style.display = 'none';
+            notificationsTab.style.display = 'none';
         }
     }
 
