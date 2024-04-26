@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", function() {
             logoutBtn.addEventListener('click', function(event) {
                 event.preventDefault();
 
-                const url = "http://localhost:3000/user/logout";
+                const url = "https://study-api-server.azurewebsites.net/logout"
+                //const url = "http://localhost:3000/user/logout";
 
                 fetch(url, {
                     method: "PATCH",

@@ -1,12 +1,24 @@
 document.addEventListener("DOMContentLoaded", function() {
     const signInForm = document.getElementById('signInForm');
+    const igUsernameInput = document.getElementById('ig_username');
+    const igPasswordInput = document.getElementById('ig_password');
     const token = localStorage.getItem('token');
+
+    const userData = JSON.parse(localStorage.getItem('user'));
+
+    const igUsername = userData.ig_username;
+    const igPassword = userData.ig_password;
+
+    if (igUsername && igPassword) {
+        igUsernameInput.value = igUsername;
+        igPasswordInput.value = igPassword;
+    }
     
     signInForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
-        const ig_username = document.getElementById('ig_username').value;
-        const ig_password = document.getElementById('ig_password').value;
+        const ig_username = igUsernameInput.value;
+        const ig_password = igPasswordInput.value;
 
         const data = {
             ig_username: ig_username,
@@ -14,7 +26,8 @@ document.addEventListener("DOMContentLoaded", function() {
         };
 
         try {
-            const url = "http://localhost:3000/user/insta";
+            const url = "https://study-api-server.azurewebsites.net/user/insta"
+            //const url = "http://localhost:3000/user/insta";
             const response = await fetch(url, {
                 method: "PATCH",
                 headers: {
@@ -36,6 +49,4 @@ document.addEventListener("DOMContentLoaded", function() {
             alert('Unable to sign in');
         }
     })
-
-
 })

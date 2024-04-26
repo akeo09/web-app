@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
         await login(data);
 
         async function login(data) {
-            //const url = "https://study-api-server.azurewebsites.net/user/login";
-            const url = "http://localhost:3000/user/login";
+            const url = "https://study-api-server.azurewebsites.net/user/login";
+            //const url = "http://localhost:3000/user/login";
 
             try {
                 const response = await fetch(url, {

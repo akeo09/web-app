@@ -34,8 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     async function createAccount(data) {
-        //const url = "https://study-api-server.azurewebsites.net/user";
-        const url = "http://localhost:3000/user";
+        const url = "https://study-api-server.azurewebsites.net/user";
+        //const url = "http://localhost:3000/user";
 
         try {
             const response = await fetch(url, {

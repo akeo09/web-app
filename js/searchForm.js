@@ -65,8 +65,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         sessionStorage.setItem('searchParams', JSON.stringify(queryParams));
 
-        //const url = "https://study-api-server.azurewebsites.net/studygroups";
-        const url = "http://localhost:3000/studygroups?" + new URLSearchParams(queryParams).toString();
+        const url = "https://study-api-server.azurewebsites.net/studygroups?" + new URLSearchParams(queryParams).toString();
+        //const url = "http://localhost:3000/studygroups?" + new URLSearchParams(queryParams).toString();
         try {
             const response = await fetch(url,{
                 method: "GET",
@@ -262,7 +262,7 @@ document.addEventListener("DOMContentLoaded", function() {
                                 if (!userInstagramInfo) {
                                     instagramModal.style.display = "block";
                                 } else {
-                                    await createPostToInstagram(userInstagramInfo);
+                                    await createPostToInstagram(studyGroup.name);
                                 }
                             }
                             noBtn.onclick = function() {
@@ -281,7 +281,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 
         async function getUserInstagramInfo(loggedInUserId) {
-            const url = `http://localhost:3000/user/insta/${loggedInUserId}`;
+            const url = `https://study-api-server.azurewebsites.net/user/insta/${loggedInUserId}`;
+            //const url = `http://localhost:3000/user/insta/${loggedInUserId}`;
             console.log(loggedInUserId)
             try {
                 const response = await fetch(url, {
@@ -310,21 +311,22 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     
-        async function createPostToInstagram(userInstagramInfo) {
-            const ig_username = userInstagramInfo.ig_username;
-            const ig_password = userInstagramInfo.ig_password;
+        async function createPostToInstagram(studyGroupName) {
+            const token = localStorage.getItem('token')
     
             const data = {
-                caption: "I just created a study group!",
-                image_url: "https://t4.ftcdn.net/jpg/01/24/41/03/360_F_124410367_M538eQuhp4ItuXE2RVt5m75kODW2nTZz.jpg"
+                caption: `I just joined ${studyGroupName}!`,
+                image_url: "https://as1.ftcdn.net/v2/jpg/02/49/29/74/1000_F_249297448_gqnQgCOml6fZiLR2CrNHqmiuJY5O9oQg.jpg"
             };
     
             try {
-                const url = "http://localhost:3000/user/insta-post";
+                const url = "https://study-api-server.azurewebsites.net/user/insta-post";
+                //const url = "http://localhost:3000/user/insta-post";
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
                     },
                     body: JSON.stringify(data)
                 })
@@ -357,7 +359,8 @@ document.addEventListener("DOMContentLoaded", function() {
             };
     
             try {
-                const url = "http://localhost:3000/user/insta";
+                const url = "https://study-api-server.azurewebsites.net/user/insta";
+                //const url = "http://localhost:3000/user/insta";
                 const response = await fetch(url, {
                     method: 'PATCH',
                     headers: {
@@ -387,7 +390,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
             console.log("Action:", action)
             try {
-                const url = `http://localhost:3000/studygroup/${studyGroupId}/participants?${action}=true`;
+                const url = `https://study-api-server.azurewebsites.net/studygroup/${studyGroupId}/participants?${action}=true`;
+                //const url = `http://localhost:3000/studygroup/${studyGroupId}/participants?${action}=true`;
                 const response = await fetch(url, {
                     method: 'PATCH',
                     headers: {
@@ -491,7 +495,8 @@ document.addEventListener("DOMContentLoaded", function() {
             async function deleteStudyGroup(studyGroupId) {
                 const token = localStorage.getItem('token');
                 try {
-                    const url = `http://localhost:3000/studygroup/${studyGroupId}`;
+                    const url = `https://study-api-server.azurewebsites.net/studygroup/${studyGroupId}`;
+                    //const url = `http://localhost:3000/studygroup/${studyGroupId}`;
                     const response = await fetch(url, {
                         method: 'DELETE',
                         headers: {
@@ -516,7 +521,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 const token = localStorage.getItem('token');
                 //console.log("token: ", token)
                 try {
-                    const url = `http://localhost:3000/studygroup/${selectedStudyGroupId}`;
+                    const url = `https://study-api-server.azurewebsites.net/studygroup/${selectedStudyGroupId}`;
+                    //const url = `http://localhost:3000/studygroup/${selectedStudyGroupId}`;
                     const response = await fetch(url, {
                         method: 'PATCH',
                         headers: {
@@ -548,7 +554,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     alert('Please sign in again.');
                     return;
                 }
-                const url = "http://localhost:3000/studygroups?" + new URLSearchParams(queryParams).toString();
+                const url = "https://study-api-server.azurewebsites.net/studygroups?" + new URLSearchParams(queryParams).toString();
+                //const url = "http://localhost:3000/studygroups?" + new URLSearchParams(queryParams).toString();
                 window.location.href = url;
             }
             submitSearchForm();

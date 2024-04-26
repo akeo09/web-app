@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const studygroup_id = null;
 
         try {
-            const url = "http://localhost:3000/notification";
+            const url = "https://study-api-server.azurewebsites.net/notification"
+            //const url = "http://localhost:3000/notification";
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {

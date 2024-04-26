@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const instagramModal = document.getElementById('instagramModal');
     const yesBtn = document.getElementById('yesBtn');
     const noBtn = document.getElementById('noBtn');
-    //const closeBtn = document.getElementsByClassName('close')[0];
-    //const closeInstagramModalBtn = document.getElementById('closeIstagramModal');
+    const closeBtn = document.getElementsByClassName('close')[0];
+    const closeInstagramModalBtn = document.getElementById('closeIstagramModal');
     const instagramForm = document.getElementById('instagramForm');
 
     const createStudyGroupForm = document.getElementById('studyGroupForm');
@@ -89,10 +89,15 @@ document.addEventListener('DOMContentLoaded', function() {
         yesBtn.onclick = async function() {
             modal.style.display = "none";
             const userInstagramInfo = await getUserInstagramInfo(loggedInUserId);
+            console.log(loggedInUserId)
             if (!userInstagramInfo) {
                 instagramModal.style.display = "block";
+                closeInstagramModalBtn.onclick = function() {
+                    modal.style.display = "none";
+                }
             } else {
-                const success = await createPostToInstagram(userInstagramInfo);
+                const studyGroupName = document.getElementById('name').value
+                const success = await createPostToInstagram(studyGroupName);
                 if (success) {
                     handleResponse(true);
                 } else {
@@ -105,16 +110,11 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.style.display = "none";
             handleResponse(true);
         }
-        /*
+        
         closeBtn.onclick = function() {
             modal.style.display = "none";
-            createGroup();
         }
         
-        closeInstagramModalBtn.onclick = function() {
-            modal.style.display = "none";
-        }
-        */
         function getMeetingTimes() {
             const meetingTimeDivs = document.querySelectorAll('.meetingTime');
             const meetingTimes = [];
@@ -131,7 +131,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     async function getUserInstagramInfo(loggedInUserId) {
-        const url = `http://localhost:3000/user/insta/${loggedInUserId}`;
+        const url = `https://study-api-server.azurewebsites.net/user/insta/${loggedInUserId}`
+        //const url = `http://localhost:3000/user/insta/${loggedInUserId}`;
         console.log(loggedInUserId)
         try {
             const response = await fetch(url, {
@@ -160,21 +161,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    async function createPostToInstagram(userInstagramInfo) {
-        const ig_username = userInstagramInfo.ig_username;
-        const ig_password = userInstagramInfo.ig_password;
+    async function createPostToInstagram(studyGroupName) {
+        const token = localStorage.getItem('token')
 
         const data = {
-            caption: "I just created a study group!",
-            image_url: "https://t4.ftcdn.net/jpg/01/24/41/03/360_F_124410367_M538eQuhp4ItuXE2RVt5m75kODW2nTZz.jpg"
+            caption: `I just created ${studyGroupName}!`,
+            image_url: "https://as2.ftcdn.net/v2/jpg/04/09/80/39/1000_F_409803938_ZMkBERWVXCcLZjz1NTnKn2NVw9sHGRFg.jpg"
         };
 
         try {
-            const url = "http://localhost:3000/user/insta-post";
+            const url = "https://study-api-server.azurewebsites.net/user/insta-post"
+            //const url = "http://localhost:3000/user/insta-post";
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(data)
             })
@@ -196,6 +198,8 @@ document.addEventListener('DOMContentLoaded', function() {
     instagramForm.addEventListener('submit', async function (event) {
         event.preventDefault();
 
+        const token = localStorage.getItem('token');
+
         const ig_username = document.getElementById('ig_username').value;
         const ig_password = document.getElementById('ig_password').value;
 
@@ -205,7 +209,8 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         try {
-            const url = "http://localhost:3000/user/insta";
+            const url = "https://study-api-server.azurewebsites.net/user/insta"
+            //const url = "http://localhost:3000/user/insta";
             const response = await fetch(url, {
                 method: "PATCH",
                 headers: {
@@ -231,8 +236,8 @@ document.addEventListener('DOMContentLoaded', function() {
     async function createGroup(studyGroupData) {
         const token = localStorage.getItem('token');
 
-        //const url = "https://study-api-server.azurewebsites.net/studygroup";
-        const url = "http://localhost:3000/studygroup";
+        const url = "https://study-api-server.azurewebsites.net/studygroup";
+        //const url = "http://localhost:3000/studygroup";
 
         try {
             const response = await fetch(url, {

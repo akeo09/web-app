@@ -1,7 +1,8 @@
 document.addEventListener('DOMContentLoaded', async function() {  
     const token = localStorage.getItem('token');
     try {
-        const url = "http://localhost:3000/notifications";
+        const url = "https://study-api-server.azurewebsites.net/notifications"
+        //const url = "http://localhost:3000/notifications";
         const response = await fetch(url, {
             method: 'GET',
             headers: {
