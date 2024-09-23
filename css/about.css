@@ -10,6 +10,7 @@ body {
   }
 
   .container {
+    color: white;
     margin: 25px 40px;
     padding: 15px;
     background-color: grey;
